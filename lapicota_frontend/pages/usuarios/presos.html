@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Presos - La Picota</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../css/dashboard.css" rel="stylesheet">
+    <script src="../../js/auth.js"></script>
+</head>
+
+<body>
+    <div class="d-flex">
+        <nav class="sidebar">
+            <h3>La Picota</h3>
+            <p class="text-muted">Panel administrativo</p>
+            <div class="mt-4">
+                <a href="../../index.html" class="menu-item">Dashboard</a>
+                <a href="./guardias.html" class="menu-item">Guardias</a>
+                <a href="./presos.html" class="menu-item">Presos</a>
+                <a href="../incidentes/index.html" class="menu-item">Incidentes</a>
+                <a href="../visitas/index.html" class="menu-item">Visitas</a>
+            </div>
+        </nav>
+
+        <main class="flex-grow-1 bg-light" style="min-height: 100vh;">
+            <header class="topbar d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 id="topbarTitle">Presos</h4>
+                    <small id="topbarSubtitle" class="text-secondary">Gestión de presos penitenciarios</small>
+                </div>
+                <div id="topbarActions" class="d-flex align-items-center gap-2"></div>
+            </header>
+            <div class="container-fluid p-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="fw-bold mb-0">Gestión de Presos</h3>
+                        <small class="text-muted">Control y seguimiento de población penitenciaria</small>
+                    </div>
+                    <button class="btn btn-primary shadow-sm crud-button" onclick="abrirModalPreso()">
+                        <i class="bi bi-plus-lg"></i> Nuevo preso
+                    </button>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-blue p-3 text-center">
+                            <h6 class="text-uppercase">Total</h6>
+                            <h2 id="totalPresos">0</h2>
+                            <small>Presos registrados</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-success p-3 text-center">
+                            <h6 class="text-uppercase">Activos</h6>
+                            <h2 id="estatusActivos">0</h2>
+                            <small>En custodia</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-warning p-3 text-center">
+                            <h6 class="text-uppercase">Liberados</h6>
+                            <h2 id="estatusLiberados">0</h2>
+                            <small>Desmovilizados</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-danger p-3 text-center">
+                            <h6 class="text-uppercase">Aislados</h6>
+                            <h2 id="estatusAislados">0</h2>
+                            <small>Sin visitas</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-info p-3 text-center">
+                            <h6 class="text-uppercase">Trasladados</h6>
+                            <h2 id="estatusTrasladados">0</h2>
+                            <small>Movimientos</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light border-bottom">
+                        <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtros avanzados</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Documento o Nombre</label>
+                                <input type="text" id="filtroDocumento" class="form-control"
+                                    placeholder="Ej: 1234567890 o Juan..." onkeyup="filtrarPresos()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Delito</label>
+                                <input type="text" id="filtroDelito" class="form-control" placeholder="Ej: hurto"
+                                    onkeyup="filtrarPresos()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Estado</label>
+                                <select id="filtroEstado" class="form-select" onchange="filtrarPresos()">
+                                    <option value="">Todos los estados</option>
+                                    <option value="ACTIVO">ACTIVO</option>
+                                    <option value="TRASLADADO">TRASLADADO</option>
+                                    <option value="EN AISLAMIENTO">EN AISLAMIENTO</option>
+                                    <option value="LIBERADO">LIBERADO</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-outline-secondary w-100" onclick="limpiarFiltrosPresos()">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Limpiar filtros
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0"><i class="bi bi-list-check"></i> Listado de Presos</h6>
+                        <span class="badge bg-primary" id="totalRegistrosPresos">0 presos</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-dark text-center">
+                                    <tr>
+                                        <th style="min-width: 50px;">ID</th>
+                                        <th style="min-width: 150px;">Nombre Completo</th>
+                                        <th style="min-width: 120px;">Documento</th>
+                                        <th style="min-width: 120px;">Delito</th>
+                                        <th style="min-width: 100px;">Estado</th>
+                                        <th style="min-width: 110px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaPresos" class="text-center">
+                                    <tr>
+                                        <td colspan="6" class="text-muted">Cargando presos...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- MODAL DE DETALLES -->
+        <div class="modal fade" id="modalDetalles" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content shadow">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-info-circle"></i> Detalles del Preso
+                        </h5>
+                        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="modalDetallesContenido">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalPreso" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content shadow">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title"><i class="bi bi-person-plus"></i> Preso</h5>
+                        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="id_preso">
+                        <div id="alertContainer" class="mb-3"></div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="doc" class="form-label">Documento</label>
+                                <input type="text" id="doc" class="form-control" placeholder="Documento">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="nombres" class="form-label">Nombres</label>
+                                <input type="text" id="nombres" class="form-control" placeholder="Nombres">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="apellidos" class="form-label">Apellidos</label>
+                                <input type="text" id="apellidos" class="form-control" placeholder="Apellidos">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="delito" class="form-label">Delito</label>
+                                <input type="text" id="delito" class="form-control" placeholder="Delito">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="fecha" class="form-label">Fecha de ingreso</label>
+                                <input type="date" id="fecha" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="estado" class="form-label">Estado</label>
+                                <select id="estado" class="form-select">
+                                    <option value="ACTIVO">ACTIVO</option>
+                                    <option value="TRASLADADO">TRASLADADO</option>
+                                    <option value="EN AISLAMIENTO">EN AISLAMIENTO</option>
+                                    <option value="LIBERADO">LIBERADO</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" onclick="guardarPreso()">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="../../js/usuarios/presos.js"></script>
+</body>
+
+</html>

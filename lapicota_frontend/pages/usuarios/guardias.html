@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Guardias - La Picota</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../css/dashboard.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="../../js/auth.js"></script>
+</head>
+
+<body>
+
+    <div class="d-flex">
+
+        <!-- SIDEBAR -->
+        <nav class="sidebar">
+            <h3>La Picota</h3>
+            <p class="text-muted">Panel administrativo</p>
+
+            <div class="mt-4">
+                <a href="../../index.html" class="menu-item">Dashboard</a>
+                <a href="./guardias.html" class="menu-item active-menu">Guardias</a>
+                <a href="./presos.html" class="menu-item">Presos</a>
+                <a href="../incidentes/index.html" class="menu-item">Incidentes</a>
+                <a href="../visitas/index.html" class="menu-item">Visitas</a>
+            </div>
+        </nav>
+
+        <!-- CONTENIDO -->
+        <main class="flex-grow-1 bg-light" style="min-height: 100vh;">
+            <header class="topbar d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 id="topbarTitle">Guardias</h4>
+                    <small id="topbarSubtitle" class="text-secondary">Gestión de guardias penitenciarios</small>
+                </div>
+                <div id="topbarActions" class="d-flex align-items-center gap-2"></div>
+            </header>
+            <div class="container-fluid p-4">
+
+                <!-- HEADER -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="fw-bold mb-0">Gestión de Guardias</h3>
+                        <small class="text-muted">Control y seguimiento de personal penitenciario</small>
+                    </div>
+
+                    <button class="btn btn-primary shadow-sm crud-button" onclick="abrirModal()">
+                        <i class="bi bi-plus-lg"></i> Nuevo guardia
+                    </button>
+                </div>
+
+                <!-- ESTADÍSTICAS RÁPIDAS -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-blue p-3 text-center">
+                            <h6 class="text-uppercase">Total</h6>
+                            <h2 id="totalGuardias">0</h2>
+                            <small>Guardias registrados</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-success p-3 text-center">
+                            <h6 class="text-uppercase">Activos</h6>
+                            <h2 id="estatusActivos">0</h2>
+                            <small>En servicio</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-warning p-3 text-center">
+                            <h6 class="text-uppercase">Inactivos</h6>
+                            <h2 id="estatusInactivos">0</h2>
+                            <small>Fuera de servicio</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-info p-3 text-center">
+                            <h6 class="text-uppercase">Trasladados</h6>
+                            <h2 id="estatusTrasladados">0</h2>
+                            <small>Cambiados de puesto</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FILTROS AVANZADOS -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light border-bottom">
+                        <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtros avanzados</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Documento o Nombre</label>
+                                <input type="text" id="filtroDocumento" class="form-control"
+                                    placeholder="Ej: 1234567890 o Juan..." onkeyup="filtrarGuardias()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Rango</label>
+                                <select id="filtroRango" class="form-select" onchange="filtrarGuardias()">
+                                    <option value="">Todos los rangos</option>
+                                    <option value="OFICIAL">OFICIAL</option>
+                                    <option value="SUBOFICIAL">SUBOFICIAL</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Turno</label>
+                                <select id="filtroTurno" class="form-select" onchange="filtrarGuardias()">
+                                    <option value="">Todos los turnos</option>
+                                    <option value="MAÑANA">MAÑANA</option>
+                                    <option value="TARDE">TARDE</option>
+                                    <option value="NOCHE">NOCHE</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Estado</label>
+                                <select id="filtroEstado" class="form-select" onchange="filtrarGuardias()">
+                                    <option value="">Todos los estados</option>
+                                    <option value="ACTIVO">ACTIVO</option>
+                                    <option value="INACTIVO">INACTIVO</option>
+                                    <option value="TRASLADADO">TRASLADADO</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-outline-secondary w-100" onclick="limpiarFiltros()">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Limpiar filtros
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABLA -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0"><i class="bi bi-list-check"></i> Listado de Guardias</h6>
+                        <span class="badge bg-primary" id="totalRegistros">0 guardias</span>
+                    </div>
+                    <div class="card-body p-0">
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+
+                                <thead class="table-dark text-center">
+                                    <tr>
+                                        <th style="min-width: 50px;">ID</th>
+                                        <th style="min-width: 150px;">Nombre Completo</th>
+                                        <th style="min-width: 120px;">Documento</th>
+                                        <th style="min-width: 100px;">Rango</th>
+                                        <th style="min-width: 100px;">Turno</th>
+                                        <th style="min-width: 100px;">Estado</th>
+                                        <th style="min-width: 110px;">Acciones</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="tablaGuardias" class="text-center">
+                                    <tr>
+                                        <td colspan="7" class="text-muted">Cargando guardias...</td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+        </main>
+
+        <!-- MODAL DE DETALLES -->
+        <div class="modal fade" id="modalDetalles" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content shadow">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-info-circle"></i> Detalles del Guardia
+                        </h5>
+                        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="modalDetallesContenido">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE GUARDIA -->
+        <div class="modal fade" id="modalGuardia" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content shadow">
+
+                    <!-- HEADER -->
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-shield"></i> Guardia
+                        </h5>
+                        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="modal-body">
+
+                        <input type="hidden" id="id_guardia">
+                        <div id="alertContainer" class="mb-3"></div>
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label">Número de Documento</label>
+                                <input type="text" id="numero_documento" class="form-control" placeholder="1234567890">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Nombres</label>
+                                <input type="text" id="nombres" class="form-control" placeholder="Juan Carlos">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Apellidos</label>
+                                <input type="text" id="apellidos" class="form-control" placeholder="Pérez López">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Fecha de Nacimiento</label>
+                                <input type="date" id="fecha_nacimiento" class="form-control">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Rango</label>
+                                <select id="rango" class="form-select">
+                                    <option value="OFICIAL">OFICIAL</option>
+                                    <option value="SUBOFICIAL">SUBOFICIAL</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Turno</label>
+                                <select id="turno" class="form-select">
+                                    <option value="MAÑANA">MAÑANA</option>
+                                    <option value="TARDE">TARDE</option>
+                                    <option value="NOCHE">NOCHE</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Estado</label>
+                                <select id="estado" class="form-select">
+                                    <option value="ACTIVO">ACTIVO</option>
+                                    <option value="INACTIVO">INACTIVO</option>
+                                    <option value="TRASLADADO">TRASLADADO</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-lg"></i> Cancelar
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="guardarGuardia()">
+                            <i class="bi bi-check-lg"></i> Guardar
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="module" src="../../js/usuarios/guardias.js"></script>
+</body>
+
+</html>

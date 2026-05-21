@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Incidentes - La Picota</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../css/dashboard.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="../../js/auth.js"></script>
+</head>
+
+<body>
+
+    <div class="d-flex">
+
+        <!-- SIDEBAR -->
+        <nav class="sidebar">
+            <h3>La Picota</h3>
+            <p class="text-muted">Panel administrativo</p>
+
+            <div class="mt-4">
+                <a href="../../index.html" class="menu-item">Dashboard</a>
+                <a href="../usuarios/guardias.html" class="menu-item">Guardias</a>
+                <a href="../usuarios/presos.html" class="menu-item">Presos</a>
+                <a href="index.html" class="menu-item active-menu">Incidentes</a>
+                <a href="../visitas/index.html" class="menu-item">Visitas</a>
+            </div>
+        </nav>
+
+        <!-- CONTENIDO -->
+        <main class="flex-grow-1 bg-light" style="min-height: 100vh;">
+            <header class="topbar d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 id="topbarTitle">Incidentes</h4>
+                    <small id="topbarSubtitle" class="text-secondary">Gestión de incidentes penitenciarios</small>
+                </div>
+                <div id="topbarActions" class="d-flex align-items-center gap-2"></div>
+            </header>
+            <div class="container-fluid p-4">
+
+                <!-- HEADER -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="fw-bold mb-0">Gestión de Incidentes</h3>
+                        <small class="text-muted">Control y seguimiento de eventos penitenciarios</small>
+                    </div>
+
+                    <button class="btn btn-primary shadow-sm crud-button" onclick="abrirModal()">
+                        <i class="bi bi-plus-lg"></i> Nuevo incidente
+                    </button>
+                </div>
+
+                <!-- ESTADÍSTICAS RÁPIDAS -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-blue p-3 text-center">
+                            <h6 class="text-uppercase">Total</h6>
+                            <h2 id="totalIncidentes">0</h2>
+                            <small>Incidentes registrados</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-warning p-3 text-center">
+                            <h6 class="text-uppercase">Pendientes</h6>
+                            <h2 id="estatusPendientes">0</h2>
+                            <small>Por revisar</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-info p-3 text-center">
+                            <h6 class="text-uppercase">En Proceso</h6>
+                            <h2 id="estatusProceso">0</h2>
+                            <small>Siendo investigados</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-green p-3 text-center">
+                            <h6 class="text-uppercase">Resueltos</h6>
+                            <h2 id="estatusResueltos">0</h2>
+                            <small>Finalizados</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FILTROS AVANZADOS -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light border-bottom">
+                        <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtros avanzados</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Cédula o Nombre del Preso</label>
+                                <input type="text" id="filtroCedula" class="form-control"
+                                    placeholder="Ej: 1234567890 o Juan..." onkeyup="filtrarIncidentes()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Tipo de Incidente</label>
+                                <select id="filtroTipo" class="form-select" onchange="filtrarIncidentes()">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="ALTERCADO">Altercado</option>
+                                    <option value="FUGA">Fuga</option>
+                                    <option value="ROBO">Robo</option>
+                                    <option value="DROGAS">Drogas</option>
+                                    <option value="VIOLENCIA">Violencia</option>
+                                    <option value="DESOBEDIENCIA">Desobediencia</option>
+                                    <option value="OTRO">Otro</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Estado</label>
+                                <select id="filtroEstado" class="form-select" onchange="filtrarIncidentes()">
+                                    <option value="">Todos los estados</option>
+                                    <option value="PENDIENTE">Pendiente</option>
+                                    <option value="EN_PROCESO">En proceso</option>
+                                    <option value="RESUELTO">Resuelto</option>
+                                    <option value="CANCELADO">Cancelado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Rango de Fechas</label>
+                                <input type="date" id="filtroFechaInicio" class="form-control"
+                                    onchange="filtrarIncidentes()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Hasta</label>
+                                <input type="date" id="filtroFechaFin" class="form-control"
+                                    onchange="filtrarIncidentes()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Búsqueda por Descripción</label>
+                                <input type="text" id="buscador" class="form-control" placeholder="Palabras clave..."
+                                    onkeyup="filtrarIncidentes()">
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-outline-secondary w-100" onclick="limpiarFiltros()">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Limpiar filtros
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABLA -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0"><i class="bi bi-list-check"></i> Listado de Incidentes</h6>
+                        <span class="badge bg-primary" id="totalRegistros">0 incidentes</span>
+                    </div>
+                    <div class="card-body p-0">
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+
+                                <thead class="table-dark text-center">
+                                    <tr>
+                                        <th style="min-width: 50px;">ID</th>
+                                        <th style="min-width: 100px;">Fecha/Hora</th>
+                                        <th style="min-width: 100px;">Tipo</th>
+                                        <th style="min-width: 150px;">Preso (Cédula)</th>
+                                        <th style="min-width: 120px;">Guardia</th>
+                                        <th style="min-width: 140px;">Descripción</th>
+                                        <th style="min-width: 90px;">Estado</th>
+                                        <th style="min-width: 110px;">Acciones</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="tablaIncidentes" class="text-center">
+                                    <tr>
+                                        <td colspan="8" class="text-muted">Cargando incidentes...</td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+        </main>
+
+        <!-- MODAL DE DETALLES -->
+        <div class="modal fade" id="modalDetalles" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content shadow">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-info-circle"></i> Detalles del Incidente
+                        </h5>
+                        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="modalDetallesContenido">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modalIncidente" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content shadow">
+
+                    <!-- HEADER -->
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-exclamation-triangle"></i> Incidente
+                        </h5>
+                        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="modal-body">
+
+                        <input type="hidden" id="id_incidente">
+                        <div id="alertContainer" class="mb-3"></div>
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label">Tipo</label>
+                                <input type="text" id="tipo" class="form-control">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Estado</label>
+                                <select id="estado" class="form-select">
+                                    <option>PENDIENTE</option>
+                                    <option>EN_PROCESO</option>
+                                    <option>RESUELTO</option>
+                                    <option>CANCELADO</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Descripción</label>
+                                <textarea id="descripcion" class="form-control" rows="2"></textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Fecha</label>
+                                <input type="date" id="fecha" class="form-control">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Hora</label>
+                                <input type="time" id="hora" class="form-control">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Preso</label>
+                                <select id="preso" class="form-select"></select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Guardia</label>
+                                <select id="guardia" class="form-select"></select>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="btn btn-success" onclick="guardarIncidente()">
+                            <i class="bi bi-check-lg"></i> Guardar
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- 1. jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- 2. Select2 -->
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+        <!-- 3. Bootstrap -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- 4. TU JS (siempre de último) -->
+        <script type="module" src="../../js/incidentes/incidentes.js"></script>
+</body>
+
+</html>

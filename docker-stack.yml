@@ -1,0 +1,224 @@
+version: '3.9'
+
+# =============================================
+# LAPICOTA - Docker Swarm Stack
+# web1: 192.168.100.3  (Manager - primary)
+# dns1: 192.168.100.2  (Worker)
+# =============================================
+
+networks:
+  lapicota_net:
+    driver: overlay
+    attachable: true
+
+volumes:
+  mysql_data:
+    driver: local
+
+services:
+
+  # =============================================
+  # BASE DE DATOS MySQL (única, compartida)
+  # Se ejecuta SOLO en web1 (manager)
+  # =============================================
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootlapicota2024
+      MYSQL_DATABASE: lapicota
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - lapicota_net
+    ports:
+      - "3306:3306"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootlapicota2024"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # =============================================
+  # Inicializador de DB (corre una vez y sale)
+  # =============================================
+  db-init:
+    image: mysql:8.0
+    depends_on:
+      - mysql
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - lapicota_net
+    environment:
+      MYSQL_PWD: rootlapicota2024
+    command: >
+      bash -c "
+        echo 'Esperando MySQL...';
+        until mysqladmin ping -h mysql -uroot -prootlapicota2024 --silent; do sleep 3; done;
+        echo 'MySQL listo. Ejecutando scripts...';
+        mysql -h mysql -uroot -prootlapicota2024 < /docker-entrypoint-initdb.d/01_init.sql;
+        echo 'Init completado.';
+      "
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: none
+
+  # =============================================
+  # Microservicio: Usuarios (presos + guardias)
+  # Puerto 3001 — distribuido en ambos nodos
+  # =============================================
+  usuarios-service:
+    image: jjuanmanu15/lapicota-usuarios:latest
+    environment:
+      DB_HOST: mysql
+      DB_USER: lapicota_user
+      DB_PASSWORD: lapicota123
+      DB_NAME: lapicota
+      DB_PORT: 3306
+    networks:
+      - lapicota_net
+    depends_on:
+      - mysql
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+      placement:
+        preferences:
+          - spread: node.id
+
+  # =============================================
+  # Microservicio: Visitas
+  # Puerto 3002 — distribuido en ambos nodos
+  # =============================================
+  visitas-service:
+    image: jjuanmanu15/lapicota-visitas:latest
+    environment:
+      DB_HOST: mysql
+      DB_USER: lapicota_user
+      DB_PASSWORD: lapicota123
+      DB_NAME: lapicota
+      DB_PORT: 3306
+    networks:
+      - lapicota_net
+    depends_on:
+      - mysql
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+      placement:
+        preferences:
+          - spread: node.id
+
+  # =============================================
+  # Microservicio: Incidentes
+  # Puerto 3003 — distribuido en ambos nodos
+  # =============================================
+  incidentes-service:
+    image: jjuanmanu15/lapicota-incidentes:latest
+    environment:
+      DB_HOST: mysql
+      DB_USER: lapicota_user
+      DB_PASSWORD: lapicota123
+      DB_NAME: lapicota
+      DB_PORT: 3306
+    networks:
+      - lapicota_net
+    depends_on:
+      - mysql
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+      placement:
+        preferences:
+          - spread: node.id
+
+  # =============================================
+  # Frontend (Nginx sirviendo HTML estático)
+  # Puerto 80
+  # =============================================
+  frontend:
+    image: jjuanmanu15/lapicota-frontend:latest
+    networks:
+      - lapicota_net
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      placement:
+        preferences:
+          - spread: node.id
+
+  # =============================================
+  # HAProxy — Balanceador de carga
+  # Expone al exterior: 80, 3001, 3002, 3003, 8404
+  # Se ejecuta en el manager (web1)
+  # =============================================
+  haproxy:
+    image: jjuanmanu15/lapicota-haproxy:latest
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 3001
+        published: 3001
+        protocol: tcp
+        mode: host
+      - target: 3002
+        published: 3002
+        protocol: tcp
+        mode: host
+      - target: 3003
+        published: 3003
+        protocol: tcp
+        mode: host
+      - target: 8404
+        published: 8404
+        protocol: tcp
+        mode: host
+    networks:
+      - lapicota_net
+    depends_on:
+      - frontend
+      - usuarios-service
+      - visitas-service
+      - incidentes-service
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+        delay: 5s

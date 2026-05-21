@@ -1,0 +1,352 @@
+body {
+    overflow-x: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body.light-mode {
+    background-color: #eef2ff;
+    color: #1f2937;
+}
+
+body.dark-mode {
+    background-color: #0b1220;
+    color: #cbd5e1;
+}
+
+.sidebar {
+    height: 100vh;
+    width: 260px;
+    background: linear-gradient(180deg, #23272b 0%, #1f2023 100%);
+    color: #fff;
+    padding: 24px 16px;
+    box-shadow: 3px 0 20px rgba(0, 0, 0, 0.17);
+    position: sticky;
+    top: 0;
+}
+
+.sidebar h3 {
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #f8fafc;
+}
+
+.sidebar p {
+    color: #9ca3af;
+}
+
+.sidebar .menu-item {
+    display: block;
+    color: #e2e8f0;
+    margin-bottom: 0.55rem;
+    border-radius: 10px;
+    padding: 10px 12px;
+    transition: 0.2s;
+    font-weight: 600;
+    text-align: left;
+}
+
+.sidebar .menu-item:hover,
+.sidebar .menu-item.active-menu {
+    background: #3b82f6;
+    color: white;
+    text-decoration: none;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.topbar {
+    background: #1e293b;
+    color: white;
+    padding: 16px 22px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+    border-bottom: 1px solid #334155;
+}
+
+.topbar h4,
+.topbar small {
+    color: #f8fafc;
+}
+
+body.light-mode .topbar {
+    background: #1e293b;
+    color: white;
+}
+
+body.dark-mode .topbar {
+    background: linear-gradient(135deg, #0f172a, #111827);
+    color: #cbd5e1;
+}
+
+body.dark-mode .sidebar {
+    background: linear-gradient(180deg, #111827 0%, #0b1120 100%);
+}
+
+body.dark-mode .sidebar h3,
+body.dark-mode .sidebar p,
+body.dark-mode .sidebar .menu-item {
+    color: #d1d5db;
+}
+
+body.dark-mode .sidebar .menu-item:hover,
+body.dark-mode .sidebar .menu-item.active-menu {
+    background: #2563eb;
+}
+
+body.dark-mode .card,
+body.dark-mode .table,
+body.dark-mode .table thead,
+body.dark-mode .card-header {
+    background: #111827;
+    color: #e2e8f0;
+}
+
+.kpi-card {
+    border-radius: 16px;
+    border: 0;
+    color: #fff;
+    padding: 20px;
+    min-height: 160px;
+    box-shadow: 0 14px 30px -12px rgba(30, 41, 59, 0.32);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -14px rgba(30, 41, 59, 0.45);
+}
+
+.kpi-card .count {
+    font-size: 2.6rem;
+    font-weight: 800;
+}
+
+.kpi-card .label {
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    opacity: 0.83;
+    font-size: 0.9rem;
+}
+
+.bg-primary-soft {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+}
+
+.bg-emerald-soft {
+    background: linear-gradient(135deg, #34d399, #22c55e);
+}
+
+.bg-rose-soft {
+    background: linear-gradient(135deg, #f87171, #ef4444);
+}
+
+.bg-amber-soft {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+}
+
+.view-section {
+    animation: fadeIn 0.35s ease-out;
+}
+
+.d-none {
+    display: none !important;
+}
+
+.table-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 14px 30px -12px rgba(15, 23, 42, 0.3);
+}
+
+.card {
+    border-radius: 12px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-control,
+.form-select {
+    background-color: #fff !important;
+    color: #000 !important;
+    border: 1px solid #ced4da !important;
+    box-shadow: none !important;
+}
+
+/* ============================================
+   ESTILOS PARA GRÁFICAS
+   ============================================ */
+
+.card {
+    border: none;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-bottom: 2px solid #e2e8f0;
+    padding: 16px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+body.dark-mode .card-header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-bottom: 2px solid #334155;
+    color: #f1f5f9;
+}
+
+.card-body {
+    padding: 20px;
+    position: relative;
+}
+
+.card-dashboard {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.bg-blue {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.bg-green {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+}
+
+.bg-red {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.bg-orange {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.card-dashboard h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 12px 0;
+}
+
+.card-dashboard h6 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    opacity: 0.9;
+}
+
+.card-dashboard small {
+    opacity: 0.85;
+    font-size: 0.85rem;
+}
+
+/* Canvas responsivo */
+canvas {
+    max-height: 100%;
+}
+
+/* Animaciones de carga */
+.chart-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 250px;
+    color: #94a3b8;
+    font-size: 0.95rem;
+}
+
+.bg-info {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
+    color: white;
+}
+
+/* Estilos para tablas mejoradas */
+.table thead.table-dark {
+    background-color: #1e293b !important;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+body.dark-mode .table tbody tr:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Badges mejorados */
+.badge {
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+}
+
+/* Cards de estadísticas */
+.card-dashboard {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.card-dashboard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Modal mejorado */
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px 12px 0 0;
+}
+
+/* Mejora de legibilidad en tarjetas de gráficos */
+.card-header .bi {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+/* Espaciado adaptativo */
+@media (max-width: 768px) {
+    .card-dashboard {
+        min-height: 140px;
+    }
+
+    .card-dashboard h2 {
+        font-size: 1.8rem;
+    }
+
+    .col-lg-6,
+    .col-lg-12 {
+        margin-bottom: 1rem;
+    }
+}

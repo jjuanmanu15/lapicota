@@ -1,0 +1,36 @@
+.form-control,
+.form-select {
+    background-color: #fff !important;
+    color: #000 !important;
+    border: 1px solid #ced4da !important;
+    box-shadow: none !important;
+}
+
+/* ============================================
+   CLASES DE CONTROL DE PERMISOS
+   ============================================ */
+
+/* Elementos solo visibles para admin */
+.admin-only {
+    /* La clase se define dinamicamente por auth.js */
+}
+
+/* Botones de CRUD (crear, actualizar, eliminar) */
+.crud-button {
+    /* Se desabilita dinamicamente por auth.js si el usuario no es admin */
+}
+
+.crud-button:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+/* Botones de métricas/análisis */
+.metrics-button {
+    /* Se desabilita dinamicamente por auth.js si el usuario no es admin */
+}
+
+.metrics-button:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}

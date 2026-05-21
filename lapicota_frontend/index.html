@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - La Picota</title>
+
+    <!-- Bootstrap + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/dashboard.css" rel="stylesheet">
+    <script src="js/auth.js"></script>
+
+</head>
+
+<body>
+
+    <div class="d-flex">
+        <!-- SIDEBAR -->
+        <nav class="sidebar">
+            <h3>La Picota</h3>
+            <p class="text-muted">Panel administrativo</p>
+
+            <div class="mt-4">
+                <div class="mt-4">
+                    <a href="../../index.html" class="menu-item active-menu">Dashboard</a>
+                    <a href="./pages/usuarios/guardias.html" class="menu-item">Guardias</a>
+                    <a href="./pages/usuarios/presos.html" class="menu-item ">Presos</a>
+                    <a href="./pages/incidentes/index.html" class="menu-item">Incidentes</a>
+                    <a href="./pages/visitas/index.html" class="menu-item">Visitas</a>
+                </div>
+                <!-- <div class="mt-4"> -->
+                <!-- <a href="perfil.html" class="menu-item">Perfil</a>
+                    <a href="index.html" class="menu-item active-menu">Dashboard</a>
+                    <a href="guardias.html" class="menu-item">Guardias</a>
+                    <a href="presos.html" class="menu-item">Presos</a>
+                    <a href="visitas.html" class="menu-item">Visitas</a>
+                </div> -->
+            </div>
+        </nav>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="flex-grow-1 bg-light" style="min-height: 100vh;">
+            <header class="topbar d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 id="topbarTitle">Dashboard</h4>
+                    <small id="topbarSubtitle" class="text-secondary">Visión general del sistema penitenciario</small>
+                </div>
+                <div id="topbarActions" class="d-flex align-items-center gap-2"></div>
+            </header>
+
+            <div class="container-fluid p-4">
+                <section id="dashboardView" class="view-section">
+                    <div id="dashboardStatus" class="mb-3 text-secondary">Cargando dashboard...</div>
+                    <div class="row g-3" id="kpis">
+                        <!-- Controls for CSV datasets - ADMIN ONLY -->
+                        <div class="col-12 mt-3 admin-only">
+                            <div class="d-flex gap-2 align-items-center">
+                                <label class="mb-0">Top N:</label>
+                                <input id="topNInput" type="number" min="1" value="10" style="width:80px"
+                                    class="form-control form-control-sm">
+                                <button id="csvRefreshBtn" class="btn btn-sm btn-primary metrics-button">Refrescar
+                                    CSV</button>
+                                <button id="downloadMetricsBtn"
+                                    class="btn btn-sm btn-outline-secondary metrics-button">Descargar
+                                    métricas</button>
+                                <button id="exportChartsBtn"
+                                    class="btn btn-sm btn-outline-success metrics-button">Exportar
+                                    gráficas</button>
+                                <small class="text-muted ms-3">Fuente: carpeta entrega_lapicota</small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="card card-dashboard bg-blue p-3 text-center">
+                                <h6 class="text-uppercase">Presos</h6>
+                                <h2 id="totalPresos">0</h2>
+                                <small>Registros actuales</small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="card card-dashboard bg-green p-3 text-center">
+                                <h6 class="text-uppercase">Guardias</h6>
+                                <h2 id="totalGuardias">0</h2>
+                                <small>Registros actuales</small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="card card-dashboard bg-red p-3 text-center">
+                                <h6 class="text-uppercase">Incidentes</h6>
+                                <h2 id="totalIncidentes">0</h2>
+                                <small>Registros actuales</small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="card card-dashboard bg-orange p-3 text-center">
+                                <h6 class="text-uppercase">Visitas</h6>
+                                <h2 id="totalVisitas">0</h2>
+                                <small>Registros actuales</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ROW 1: Gráficos de incidentes e incidentes por fecha -->
+                    <!-- <div class="row g-3 mt-1">
+                        <div class="col-lg-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-white border-bottom">
+                                    <strong><i class="bi bi-exclamation-triangle"></i> Incidentes por preso</strong>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="incidentesPorPresoChart" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-white border-bottom">
+                                    <strong><i class="bi bi-calendar-event"></i> Incidentes por fecha</strong>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="incidentesPorFechaChart" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <!-- ROW 2: Gráficos de visitas / incidentes - ADMIN ONLY -->
+                    <div class="row g-3 mt-3 admin-only">
+                        <div class="col-lg-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-white border-bottom">
+                                    <strong><i class="bi bi-geo-alt"></i> Incidentes por patio</strong>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="incidentesPorPatioChart" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-white border-bottom">
+                                    <strong><i class="bi bi-pie-chart"></i> Visitas por estado</strong>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="visitasEstadoChart" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ROW 3: Estadísticas adicionales - ADMIN ONLY -->
+                    <div class="row g-3 mt-3 admin-only">
+                        <div class="col-lg-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-white border-bottom">
+                                    <strong><i class="bi bi-graph-up"></i> Visitas por fecha</strong>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="visitasPorFechaChart" height="150"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ROW 4: Gráficos adicionales desde CSV - ADMIN ONLY -->
+                    <div class="row g-3 mt-3 admin-only">
+                        <div class="col-lg-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-white border-bottom">
+                                    <strong>Incidentes por tipo</strong>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="incidentesPorTipoChart" height="150"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-white border-bottom">
+                                    <strong>Incidentes por turno</strong>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="incidentesPorTurnoChart" height="150"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-3 admin-only">
+                        <div class="col-lg-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-white border-bottom">
+                                    <strong>Top guardias (incidentes)</strong>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="topGuardiasChart" height="150"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-header bg-white border-bottom">
+                                    <strong>Incidentes por delito</strong>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="incidentesPorDelitoChart" height="150"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+
+    <script type="module" src="js/dashboard.js"></script>
+</body>
+
+</html>

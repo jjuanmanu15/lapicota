@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Visitas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../../css/dashboard.css" rel="stylesheet">
+    <script src="../../js/auth.js"></script>
+
+</head>
+
+<body>
+    <div class="d-flex">
+        <!-- SIDEBAR -->
+        <nav class="sidebar">
+            <h3>La Picota</h3>
+            <p class="text-muted">Panel administrativo</p>
+
+            <div class="mt-4">
+                <a href="../../index.html" class="menu-item">Dashboard</a>
+                <a href="../usuarios/guardias.html" class="menu-item">Guardias</a>
+                <a href="../usuarios/presos.html" class="menu-item">Presos</a>
+                <a href="../incidentes/index.html" class="menu-item">Incidentes</a>
+                <a href="index.html" class="menu-item active-menu">Visitas</a>
+            </div>
+        </nav>
+
+        <main class="flex-grow-1 bg-light" style="min-height: 100vh;">
+            <header class="topbar d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 id="topbarTitle">Visitas</h4>
+                    <small id="topbarSubtitle" class="text-secondary">Gestión de visitas penitenciarias</small>
+                </div>
+                <div id="topbarActions" class="d-flex align-items-center gap-2"></div>
+            </header>
+
+            <div class="container-fluid p-4">
+
+                <!-- HEADER -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="fw-bold mb-0">Gestión de Visitas</h3>
+                        <small class="text-muted">Control y seguimiento de visitas penitenciarias</small>
+                    </div>
+
+                    <button class="btn btn-primary shadow-sm crud-button" onclick="abrirModal()">
+                        <i class="bi bi-plus-lg"></i> Nueva visita
+                    </button>
+                </div>
+
+                <!-- ESTADÍSTICAS RÁPIDAS -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-blue p-3 text-center">
+                            <h6 class="text-uppercase">Total</h6>
+                            <h2 id="totalVisitas">0</h2>
+                            <small>Visitas registradas</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-warning p-3 text-center">
+                            <h6 class="text-uppercase">Pendientes</h6>
+                            <h2 id="estatusPendientes">0</h2>
+                            <small>Por aprobar</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-info p-3 text-center">
+                            <h6 class="text-uppercase">Aprobadas</h6>
+                            <h2 id="estatusAprobadas">0</h2>
+                            <small>Permitidas</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-dashboard bg-green p-3 text-center">
+                            <h6 class="text-uppercase">Finalizadas</h6>
+                            <h2 id="estatusFinalizadas">0</h2>
+                            <small>Completadas</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FILTROS AVANZADOS -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-light border-bottom">
+                        <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtros avanzados</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Nombre del Visitante</label>
+                                <input type="text" id="filtroNombre" class="form-control"
+                                    placeholder="Buscar por nombre..." onkeyup="filtrarVisitas()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Documento del Visitante</label>
+                                <input type="text" id="filtroDocumento" class="form-control"
+                                    placeholder="Buscar por documento..." onkeyup="filtrarVisitas()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Estado</label>
+                                <select id="filtroEstado" class="form-select" onchange="filtrarVisitas()">
+                                    <option value="">Todos los estados</option>
+                                    <option value="PENDIENTE">Pendiente</option>
+                                    <option value="APROBADA">Aprobada</option>
+                                    <option value="RECHAZADA">Rechazada</option>
+                                    <option value="PERMITIDA">Permitida</option>
+                                    <option value="DENEGADA">Denegada</option>
+                                    <option value="FINALIZADA">Finalizada</option>
+                                    <option value="CANCELADA">Cancelada</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Fecha de Visita</label>
+                                <input type="date" id="filtroFecha" class="form-control" onchange="filtrarVisitas()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">ID del Preso</label>
+                                <input type="number" id="filtroPresoId" class="form-control"
+                                    placeholder="Buscar por preso..." onkeyup="filtrarVisitas()">
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button class="btn btn-outline-secondary w-100" onclick="limpiarFiltros()">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Limpiar filtros
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABLA -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light border-bottom d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0"><i class="bi bi-list-check"></i> Listado de Visitas</h6>
+                        <span class="badge bg-primary" id="totalRegistros">0 visitas</span>
+                    </div>
+                    <div class="card-body p-0">
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+
+                                <thead class="table-dark text-center">
+                                    <tr>
+                                        <th style="min-width: 50px;">ID</th>
+                                        <th style="min-width: 150px;">Visitante</th>
+                                        <th style="min-width: 120px;">Documento</th>
+                                        <th style="min-width: 80px;">Preso ID</th>
+                                        <th style="min-width: 100px;">Fecha/Hora</th>
+                                        <th style="min-width: 90px;">Estado</th>
+                                        <th style="min-width: 110px;">Acciones</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="tablaVisitas" class="text-center">
+                                    <tr>
+                                        <td colspan="7" class="text-muted">Cargando visitas...</td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+        </main>
+
+        <!-- MODAL DE DETALLES -->
+        <div class="modal fade" id="modalDetalles" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content shadow">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-info-circle"></i> Detalles de la Visita
+                        </h5>
+                        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="modalDetallesContenido">
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE VISITA -->
+        <div class="modal fade" id="modalVisita" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content shadow">
+
+                    <!-- HEADER -->
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-person-plus"></i> Visita
+                        </h5>
+                        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="modal-body">
+
+                        <input type="hidden" id="id_visita">
+                        <div id="alertContainer" class="mb-3"></div>
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label">Nombre del Visitante *</label>
+                                <input type="text" id="nombre_visitante" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Documento del Visitante *</label>
+                                <input type="text" id="documento_visitante" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Preso *</label>
+                                <select id="preso_id" class="form-select" required>
+                                    <option value="">Selecciona un preso...</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Estado</label>
+                                <select id="estado_visita" class="form-select">
+                                    <option value="PENDIENTE" selected>PENDIENTE</option>
+                                    <option value="APROBADA">APROBADA</option>
+                                    <option value="RECHAZADA">RECHAZADA</option>
+                                    <option value="PERMITIDA">PERMITIDA</option>
+                                    <option value="DENEGADA">DENEGADA</option>
+                                    <option value="FINALIZADA">FINALIZADA</option>
+                                    <option value="CANCELADA">CANCELADA</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Fecha de Visita *</label>
+                                <input type="date" id="fecha_visita" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Hora de Visita *</label>
+                                <input type="time" id="hora_visita" class="form-control" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Motivo de Denegación</label>
+                                <textarea id="motivo_denegacion" class="form-control" rows="2"
+                                    placeholder="Solo si el estado es RECHAZADA o DENEGADA"></textarea>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="btn btn-success" onclick="guardarVisita()">
+                            <i class="bi bi-check-lg"></i> Guardar
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="../../js/visitas/visitas.js"></script>
+</body>
+
+</html>
