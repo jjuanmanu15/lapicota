@@ -1,0 +1,51 @@
+preso_doc,preso_nombres,preso_apellidos,preso_delito,preso_celda,preso_patio
+10000001,Carlos Eduardo,Mendoza Rivera,Robo agravado,A-101,1
+10000002,Jorge Luis,Paredes Gomez,Trafico de drogas,A-102,1
+10000003,Roberto Antonio,Suarez Leon,Homicidio,B-201,2
+10000004,Miguel Angel,Torres Cifuentes,Estafa,B-202,2
+10000005,Pedro Pablo,Vargas Quispe,Robo,C-301,3
+10000006,Luis Fernando,Castro Morales,Trafico de drogas,C-302,3
+10000007,Diego Armando,Flores Mamani,Secuestro,A-103,1
+10000008,Marco Antonio,Huanca Quispe,Robo agravado,A-104,1
+10000009,Juan Carlos,Mamani Condori,Homicidio,B-203,2
+10000010,Andres Felipe,Condori Quispe,Estafa,B-204,2
+10000011,Sergio Daniel,Quispe Mamani,Robo,C-303,3
+10000012,Raul Eduardo,Morales Paredes,Trafico de drogas,C-304,3
+10000013,Victor Manuel,Ramos Torres,Violacion,A-105,1
+10000014,Cesar Augusto,Herrera Vargas,Robo agravado,A-106,1
+10000015,Omar Alfredo,Gutierrez Castro,Homicidio,B-205,2
+10000016,Hugo Enrique,Sanchez Leon,Estafa,B-206,2
+10000017,Ivan Rodrigo,Pacheco Suarez,Robo,C-305,3
+10000018,Nestor Julian,Montoya Flores,Trafico de drogas,C-306,3
+10000019,Gustavo Adolfo,Cabrera Huanca,Secuestro,A-107,1
+10000020,Hector Fabian,Delgado Condori,Robo agravado,A-108,1
+10000021,Leonardo Ernesto,Reyes Mamani,Homicidio,B-207,2
+10000022,Alberto Javier,Soto Quispe,Trafico de drogas,B-208,2
+10000023,Federico Nicolas,Lozano Torres,Estafa,C-307,3
+10000024,Ricardo Matias,Medina Paredes,Robo,C-308,3
+10000025,Santiago Tomas,Fuentes Vargas,Violacion,A-109,1
+10000026,Alejandro Bruno,Aguilar Castro,Robo agravado,A-110,1
+10000027,Cristian Esteban,Vega Leon,Homicidio,B-209,2
+10000028,Daniel Mauricio,Ortiz Suarez,Trafico de drogas,B-210,2
+10000029,Mauricio Gabriel,Ponce Flores,Secuestro,C-309,3
+10000030,Pablo Sebastian,Arce Huanca,Estafa,C-310,3
+10000031,Gonzalo Ignacio,Rojas Condori,Robo,A-111,1
+10000032,Rodrigo Tomas,Ibarra Mamani,Trafico de drogas,A-112,1
+10000033,Nicolas Andres,Vera Quispe,Homicidio,B-211,2
+10000034,Emilio Rafael,Salinas Torres,Estafa,B-212,2
+10000035,Arturo Osvaldo,Espinoza Paredes,Robo agravado,C-311,3
+10000036,Felipe Rodrigo,Bravo Vargas,Violacion,C-312,3
+10000037,Ruben Dario,Navarrete Castro,Robo,A-113,1
+10000038,Oscar Julian,Villalobos Leon,Trafico de drogas,A-114,1
+10000039,Ernesto Patricio,Contreras Suarez,Homicidio,B-213,2
+10000040,Horacio Claudio,Muñoz Flores,Estafa,B-214,2
+10000041,Leandro Mateo,Acosta Huanca,Robo,C-313,3
+10000042,Ignacio Lorenzo,Valdes Condori,Trafico de drogas,C-314,3
+10000043,Ezequiel Tomas,Peralta Mamani,Secuestro,A-115,1
+10000044,Joaquin Alonso,Garza Quispe,Robo agravado,A-116,1
+10000045,Maximiliano Cruz,Pizarro Torres,Homicidio,B-215,2
+10000046,Julian Armando,Orozco Paredes,Estafa,B-216,2
+10000047,Marcos Fabian,Tapia Vargas,Robo,C-315,3
+10000048,Dante Gabriel,Alvarado Castro,Trafico de drogas,C-316,3
+10000049,Bruno Leonardo,Nunez Leon,Violacion,A-117,1
+10000050,Fabian Nicolas,Campos Suarez,Robo agravado,A-118,1

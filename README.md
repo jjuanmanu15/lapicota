@@ -52,21 +52,44 @@ Capa 2 — Procesamiento distribuido (Spark Standalone):
 ## Estructura del repositorio
 
 ```
-entrega_lapicota/
-├── README.md                          ← Este archivo
-├── Vagrantfile                        ← Configuración de las VMs
-├── docker-stack.yml                   ← Stack de Docker Swarm
-├── analisis_lapicota.py               ← Script PySpark de análisis
-├── datasetpicota.csv                  ← Dataset sintético (10.000 registros)
-├── lapicota_dashboard.pbix            ← Dashboard Power BI
-├── 01_top_presos_incidentes.csv       ← Resultado análisis 1
-├── 02_incidentes_por_tipo.csv         ← Resultado análisis 2
-├── 03_incidentes_por_patio.csv        ← Resultado análisis 3
-├── 04_visitas_por_estado.csv          ← Resultado análisis 4
-├── 05_incidentes_por_turno.csv        ← Resultado análisis 5
-├── 06_evolucion_mensual.csv           ← Resultado análisis 6
-├── 07_top_guardias_incidentes.csv     ← Resultado análisis 7
-└── 08_incidentes_por_delito.csv       ← Resultado análisis 8
+lapicota/
+├── README.md
+├── docker-stack.yml
+├── analisis_lapicota/
+│   ├── data/
+│   │   └── datasetpicota.csv
+│   ├── results/
+│   │   ├── 01_top_presos_incidentes.csv
+│   │   ├── 02_incidentes_por_tipo.csv
+│   │   ├── 03_incidentes_por_patio.csv
+│   │   ├── 04_visitas_por_estado.csv
+│   │   ├── 05_incidentes_por_turno.csv
+│   │   ├── 06_evolucion_mensual.csv
+│   │   ├── 07_top_guardias_incidentes.csv
+│   │   └── 08_incidentes_por_delito.csv
+│   └── analisis_lapicota.py
+├── documents/
+│   └── informe_final.pdf
+    └── presentacion_final.pdf
+├── jmeter/
+│   ├── data/
+│   ├── results/
+│   ├── GUIA_JMETER.md
+│   └── lapicota_load_test.jmx
+├── lapicota_frontend/
+│   ├── css/
+│   ├── js/
+│   ├── pages/
+│   ├── entrega_lapicota/
+│   ├── index.html
+│   └── login.html
+└── lapicota_microservicios/
+    ├── incidentes-service/
+    ├── usuarios-service/
+    ├── visitas-service/
+    ├── node_modules/
+    ├── package.json
+    ├── package-lock.json
 ```
 
 ---
